@@ -1,0 +1,18 @@
+body {
+    background-image: url("./img/5195571.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  #canvas {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 8px solid skyblue;
+    border-radius: 50%;
+  }
