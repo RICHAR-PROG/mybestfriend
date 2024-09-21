@@ -75,7 +75,7 @@ function drawFlower() {
   ctx.fill();
 
   // Dibujamos el mensaje encima de la flor
-  const message = "This flower is for, Flor Aida😊!";
+  const message = "Esta flor amarilla es para mi mejor amiga Yhesi😊!";
   const messageFont = "bold 24px Arial";
   const messageColor = "white";
   const messageOutlineColor = "black";
