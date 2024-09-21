@@ -3,16 +3,14 @@ const ctx = canvas.getContext("2d");
 
 const colorCentro = "brown";
 const colorPétalos = "yellow";
-const colorPuntos = "black"; // Estrellas negras que "votan" de los pétalos
+const colorPuntos = "black";
 const colorTallo = "green";
 const colorHojas = "green";
-const backgroundColor = "black"; // Fondo negro
+const backgroundColor = "black";
 
-let rotationAngle = 0;
 let stars = [];
-let petalsStars = []; // Array para las estrellas que votan los pétalos
-let centerX;
-let centerY;
+let petalsStars = [];
+let flowers = [];
 
 function createStars(numStars) {
   stars = [];
@@ -53,9 +51,9 @@ function drawPetalStars() {
     const star = petalsStars[i];
     star.x += star.speedX;
     star.y += star.speedY;
-    star.alpha -= 0.01; // Las estrellas se desvanecen lentamente
+    star.alpha -= 0.01;
     if (star.alpha <= 0) {
-      petalsStars.splice(i, 1); // Eliminar la estrella si se desvanece completamente
+      petalsStars.splice(i, 1);
     } else {
       ctx.beginPath();
       ctx.arc(star.x, star.y, star.radius, 0, 2 * Math.PI);
@@ -65,48 +63,33 @@ function drawPetalStars() {
   }
 }
 
-function drawFlower() {
-  // Fondo negro del canvas
-  ctx.fillStyle = backgroundColor;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Dibuja las estrellas de fondo
-  drawStars();
-
-  // Dibuja las estrellas que votan de los pétalos
-  drawPetalStars();
-
-  // Coordenadas centrales de la flor
-  const scaleFactor = Math.min(canvas.width, canvas.height) / 600;
-  const centerX = canvas.width / 2;
-  const centerY = canvas.height / 3;
-
-  // Dibuja el tallo
+function drawFlower(centerX, centerY, rotationAngle, scaleFactor) {
+  // Tallo
   ctx.beginPath();
-  ctx.moveTo(centerX, centerY + 50);
-  ctx.lineTo(centerX, centerY + 200);
+  ctx.moveTo(centerX, centerY + 50 * scaleFactor);
+  ctx.lineTo(centerX, centerY + 200 * scaleFactor);
   ctx.strokeStyle = colorTallo;
   ctx.lineWidth = 10 * scaleFactor;
   ctx.stroke();
 
-  // Dibuja las hojas
+  // Hojas
   ctx.beginPath();
-  ctx.moveTo(centerX, centerY + 75);
-  ctx.quadraticCurveTo(centerX - 50, centerY + 25, centerX - 100, centerY + 75);
-  ctx.quadraticCurveTo(centerX - 50, centerY + 125, centerX, centerY + 75);
+  ctx.moveTo(centerX, centerY + 75 * scaleFactor);
+  ctx.quadraticCurveTo(centerX - 50 * scaleFactor, centerY + 25 * scaleFactor, centerX - 100 * scaleFactor, centerY + 75 * scaleFactor);
+  ctx.quadraticCurveTo(centerX - 50 * scaleFactor, centerY + 125 * scaleFactor, centerX, centerY + 75 * scaleFactor);
   ctx.fillStyle = colorHojas;
   ctx.fill();
 
   ctx.beginPath();
-  ctx.moveTo(centerX, centerY + 75);
-  ctx.quadraticCurveTo(centerX + 50, centerY + 25, centerX + 100, centerY + 75);
-  ctx.quadraticCurveTo(centerX + 50, centerY + 125, centerX, centerY + 75);
+  ctx.moveTo(centerX, centerY + 75 * scaleFactor);
+  ctx.quadraticCurveTo(centerX + 50 * scaleFactor, centerY + 25 * scaleFactor, centerX + 100 * scaleFactor, centerY + 75 * scaleFactor);
+  ctx.quadraticCurveTo(centerX + 50 * scaleFactor, centerY + 125 * scaleFactor, centerX, centerY + 75 * scaleFactor);
   ctx.fillStyle = colorHojas;
   ctx.fill();
 
   const phi = (1 + Math.sqrt(5)) / 2;
 
-  // Dibuja los pétalos y vota estrellas negras
+  // Pétalos y estrellas negras
   for (let i = 0; i < 200; i++) {
     const r = 4 * Math.sqrt(i) * scaleFactor;
     const theta = i * phi + rotationAngle;
@@ -123,65 +106,76 @@ function drawFlower() {
     ctx.fillStyle = colorPétalos;
     ctx.fill();
 
-    // Votar estrellas negras desde el pétalo
     if (Math.random() < 0.02) {
-      generatePetalStars(x, y); // Generar estrellas desde el pétalo
+      generatePetalStars(x, y);
     }
   }
 
-  // Dibuja los puntos
-  for (let i = 0; i < 200; i++) {
-    const theta = i * phi + rotationAngle;
-    const x = centerX + 4 * Math.sqrt(i) * scaleFactor * Math.cos(theta);
-    const y = centerY + 4 * Math.sqrt(i) * scaleFactor * Math.sin(theta);
-
-    ctx.beginPath();
-    ctx.fillStyle = colorPuntos;
-    ctx.arc(x, y, 2 * scaleFactor, 0, 2 * Math.PI);
-    ctx.fill();
-  }
-
-  // Dibuja el centro de la flor
+  // Centro de la flor
   ctx.beginPath();
   ctx.fillStyle = colorCentro;
   ctx.arc(centerX, centerY, 50 * scaleFactor, 0, 2 * Math.PI);
   ctx.fill();
 
-  // Dibuja el mensaje
-  const message = "Esta flor amarilla es para mi mejor amiga Yhesi😊!";
-  const messageFont = `bold ${24 * scaleFactor}px Arial`;
+  // Agregar texto dinámico debajo de la flor
+  const message = " ";
+  const message_ = 'Para mi mejor amiga Yhesi 😊';
+  
+  const messageFont = `bold ${12* scaleFactor}px Arial`;
   const messageColor = "white";
   const messageOutlineColor = "black";
-  const messageOutlineWidth = 2 * scaleFactor;
+  const messageOutlineWidth = 2;
 
   ctx.font = messageFont;
-  const messageWidth = ctx.measureText(message).width;
+  const messageWidth = ctx.measureText(message+message_).width;
   const messageX = centerX - messageWidth / 2;
-  const messageY = centerY + 150 * scaleFactor;
+  const messageY = centerY + 200* scaleFactor;
 
   ctx.strokeStyle = messageOutlineColor;
   ctx.lineWidth = messageOutlineWidth;
-  ctx.strokeText(message, messageX, messageY);
+  ctx.strokeText(message+message_, messageX, messageY);
 
   ctx.fillStyle = messageColor;
-  ctx.fillText(message, messageX, messageY);
-
-  rotationAngle += 0.01;
-  requestAnimationFrame(drawFlower);
+  ctx.fillText(message+message_, messageX, messageY);
 }
 
-// Redimensionar canvas y recalcular posiciones
+function drawAllFlowers() {
+  // Fondo negro del canvas
+  ctx.fillStyle = backgroundColor;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  drawStars();
+  drawPetalStars();
+
+  // Dibuja todas las flores
+  flowers.forEach(flower => {
+    drawFlower(flower.x, flower.y, flower.rotationAngle, flower.scaleFactor);
+    flower.rotationAngle += 0.01; // Animar rotación de pétalos
+  });
+
+  requestAnimationFrame(drawAllFlowers);
+}
+
+function createFlowers(numFlowers) {
+  flowers = [];
+  for (let i = 0; i < numFlowers; i++) {
+    flowers.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height * 0.7 + 50, // Ajustado para que las flores no estén muy arriba
+      rotationAngle: Math.random() * Math.PI * 2,
+      scaleFactor: 0.5 + Math.random() * 0.5,
+    });
+  }
+}
+
 function resizeCanvas() {
   canvas.width = window.innerWidth * 0.8;
   canvas.height = window.innerHeight * 0.8;
-  centerX = canvas.width / 2;
-  centerY = canvas.height / 3;
-  createStars(100); // Recrear estrellas con el nuevo tamaño
+  createStars(100);
+  createFlowers(3 + Math.floor(Math.random() * 2));
 }
 
-// Escuchar cambios en el tamaño de la ventana
 window.addEventListener("resize", resizeCanvas);
 
-// Inicialización
 resizeCanvas();
-drawFlower();
+drawAllFlowers();
